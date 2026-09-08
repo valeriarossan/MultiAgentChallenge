@@ -17,6 +17,7 @@ MultiAgentChallenge/
 │
 ├── README.md
 └── .gitignore
+```
 
 ## Technologies
 - Python
