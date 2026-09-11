@@ -18,6 +18,7 @@ MultiAgentChallenge/
 ├── README.md
 └── .gitignore
 ```
+> The exact location and names of the Python files may vary depending on the repository version.
 
 ## Overview
 
@@ -85,40 +86,6 @@ Communication between both environments is implemented through **TCP/IP using JS
 
 ---
 
-# Project Structure
-
-The project is divided into two main components:
-
-```text
-MultiAgentChallenge/
-│
-├── Python/
-│   ├── agvs.py
-│   ├── my_env.py
-│   ├── send_data.py
-│   ├── server.py
-│   └── ...
-│
-├── Unity/
-│   ├── Assets/
-│   │   └── Scripts/
-│   │       ├── AGVManager.cs
-│   │       ├── SimulationManager.cs
-│   │       ├── PalletManager.cs
-│   │       ├── PersonManager.cs
-│   │       ├── OutOfServiceManager.cs
-│   │       ├── UnityTCPClient.cs
-│   │       └── ...
-│   │
-│   └── ...
-│
-└── README.md
-```
-
-> The exact location and names of the Python files may vary depending on the repository version.
-
----
-
 # Requirements
 
 ## Python
@@ -151,7 +118,7 @@ The visualization requires:
 Clone the repository using Git:
 
 ```bash
-git clone <REPOSITORY_URL>
+git clone https://github.com/valeriarossan/MultiAgentChallenge.git
 ```
 
 Then enter the project directory:
@@ -208,7 +175,7 @@ pip install -r requirements.txt
 2. Select **Add project from disk**.
 3. Select the Unity project folder from the repository.
 4. Open the project using the compatible Unity Editor version.
-5. Open the main warehouse scene.
+5. Open the main warehouse scene titled "MAS-Environment".
 
 Make sure the required scripts and scene objects are present in the Unity project.
 
