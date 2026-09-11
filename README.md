@@ -570,6 +570,7 @@ public int? pallet_id;
 - Mariana Guerrero Pérez
 - Fernando José Anckerman Ramírez
 - Ian Eduardo Thomas Morales
+
 Developed as part of the **TC2008B Multi-Agent Systems / Integrative Project**.
 
 The project integrates:
