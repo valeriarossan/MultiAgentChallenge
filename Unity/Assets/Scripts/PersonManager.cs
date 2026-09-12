@@ -37,7 +37,6 @@ public class PersonManager : MonoBehaviour
         simulationManager.OnFrameUpdated -= HandleFrame;
     }
 
-
     // se llama automáticamente cuando SimulationManager avanza de frame.
     private void HandleFrame(FrameData frame){
         AddNewPersons(frame);
@@ -47,6 +46,7 @@ public class PersonManager : MonoBehaviour
     private void AddNewPersons(FrameData frame){
         foreach (PersonData p in frame.persons){
             if (personPoses.ContainsKey(p.id)) continue;
+            Vector3 position = CellToUnity(p.pos[0], p.pos[1], yOffset);
 
             Vector3 position = CellToUnity(p.pos[0], p.pos[1], yOffset);
 
@@ -110,8 +110,7 @@ public class PersonManager : MonoBehaviour
         yield return StartCoroutine(WalkPerson(poses, targetPos, frameDuration * 0.8f));
     }
 
-    private void SetActivePose(PersonPoses poses, GameObject activePose)
-    {
+    private void SetActivePose(PersonPoses poses, GameObject activePose){
         poses.idle.SetActive(activePose == poses.idle);
         poses.walkA.SetActive(activePose == poses.walkA);
         poses.walkB.SetActive(activePose == poses.walkB);
@@ -131,8 +130,7 @@ public class PersonManager : MonoBehaviour
         person.transform.rotation = targetRotation;
     }
 
-    private IEnumerator WalkPerson(PersonPoses poses, Vector3 targetPosition, float time)
-    {
+    private IEnumerator WalkPerson(PersonPoses poses, Vector3 targetPosition, float time){
         Vector3 startPosition = poses.root.transform.position;
         float elapsed = 0f;
         SetActivePose(poses, poses.walkA);
@@ -162,7 +160,6 @@ public class PersonManager : MonoBehaviour
             Debug.LogWarning("No se encontró MeshFilter/Mesh en idlePosePrefab.");
             return 0f;
         }
-
         return mf.sharedMesh.bounds.size.y / 2f * 0.1f;
     }
 

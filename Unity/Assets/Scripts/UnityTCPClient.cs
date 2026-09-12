@@ -22,8 +22,7 @@ public class UnityTCPClient : MonoBehaviour{
     private string receivedJson = null;
     public event Action<string> OnJsonReceived;
 
-    void Start()
-    {
+    void Start(){
         ConnectToServer();
     }
 

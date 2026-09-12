@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class PalletManager : MonoBehaviour
 {
-
-    public Vector3 GridToWorldPosition(int[] pos)
-    {
+    public Vector3 GridToWorldPosition(int[] pos){
         float x = pos[0] * gridCellSize + 0.5f * gridCellSize;
         float z = - pos[1] * gridCellSize - 0.5f * gridCellSize;
         return new Vector3(x, palletHeight, z);
@@ -69,7 +67,6 @@ public class PalletManager : MonoBehaviour
         // Guardamos la relación:
         activePallets.Add(palletId, newPallet);
         targetPositions[palletId] = position;
-
         Debug.Log($"Pallet {palletId} creado.");
     }
 
@@ -108,7 +105,6 @@ public class PalletManager : MonoBehaviour
         // Eliminarlo de nuestra lista de pallets activos
         activePallets.Remove(palletId);
         targetPositions.Remove(palletId);
-
         Debug.Log($"Pallet {palletId} destruido.");
     }
 

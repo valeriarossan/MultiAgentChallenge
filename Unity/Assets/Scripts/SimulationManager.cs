@@ -24,13 +24,11 @@ public class SimulationManager : MonoBehaviour
 
     private HashSet<int> palletsInLastFrame = new HashSet<int>();
 
-
     private void OnEnable(){
         if (tcpClient != null){
             tcpClient.OnJsonReceived += LoadSimulationFromJson;
         }
     }
-
 
     private void OnDisable(){
         if (tcpClient != null){
@@ -45,6 +43,8 @@ public class SimulationManager : MonoBehaviour
             Debug.LogError("El JSON recibido está vacío.");
             return;
         }
+        try{
+            Frames = JsonConvert.DeserializeObject<List<FrameData>>(json);
 
         try{
             Frames = JsonConvert.DeserializeObject<List<FrameData>>(json);
@@ -72,13 +72,15 @@ public class SimulationManager : MonoBehaviour
         while (CurrentFrameIndex < Frames.Count){
             ReceiveFrame(Frames[CurrentFrameIndex]);
             CurrentFrameIndex++;
-
             yield return new WaitForSeconds(secondsPerFrame);
         }
 
         Debug.Log("Simulación terminada.");
     }
 
+    //Pallets
+    private void ApplyPalletsForFrame(FrameData frame){
+        HashSet<int> palletsInThisFrame = new HashSet<int>();
 
    //Pallets
     private void ApplyPalletsForFrame(FrameData frame){
@@ -86,6 +88,7 @@ public class SimulationManager : MonoBehaviour
 
         foreach (PalletData p in frame.pallets){
             palletsInThisFrame.Add(p.id);
+            Vector3 worldPos = palletManager.GridToWorldPosition(p.pos);
 
             Vector3 worldPos = palletManager.GridToWorldPosition(p.pos);
 

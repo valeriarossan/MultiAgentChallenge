@@ -29,25 +29,21 @@ public class AGVManager : MonoBehaviour
         simulationManager.OnFrameUpdated += ApplyFrame;
     }
 
-
     private void OnDisable(){
         simulationManager.OnFrameUpdated -= ApplyFrame;
     }
-
 
     private void Update()
     {
         foreach (var pair in agvObjects){
             int id = pair.Key;
             Transform agv = pair.Value;
-
             if (!targetPositions.ContainsKey(id)) continue;
 
             Vector3 target = targetPositions[id];
             agv.position = Vector3.MoveTowards(agv.position, target, movementSpeed * Time.deltaTime);
         }
     }
-
 
     public void ApplyFrame(FrameData frame){
         foreach (AgvData agv in frame.avgs){
@@ -68,6 +64,9 @@ public class AGVManager : MonoBehaviour
         targetPositions[data.id] = newTargetPosition;
         SetOrientation(agv, data.orientation);
 
+        //Info del AGV
+        string palletInfo = data.pallet_id.HasValue ? data.pallet_id.Value.ToString() : "None";
+
         Debug.Log(
             "AGV " + data.id +
             " -> cell [" +
@@ -86,7 +85,6 @@ public class AGVManager : MonoBehaviour
     private void SetOrientation(Transform agv, int orientation){
         agv.rotation = Quaternion.Euler(0, orientation, 0);
     }
-
     public Transform GetAGV(int agvId){
         if (agvObjects.ContainsKey(agvId)){
             return agvObjects[agvId];

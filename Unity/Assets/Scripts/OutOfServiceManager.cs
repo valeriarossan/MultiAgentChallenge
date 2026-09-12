@@ -83,12 +83,7 @@ public class OutOfServiceManager : MonoBehaviour
         // La posición X y Z viene de python
         Vector3 worldPosition = CellToUnity(pos[0], pos[1], topY + markerGap);
 
-        Debug.Log(
-            $"OUT OF SERVICE | ID={id} | " +
-            $"Python cell=[{pos[0]}, {pos[1]}] | " +
-            $"topY={topY} | " +
-            $"Unity position={worldPosition}"
-        );
+        Debug.Log($"OUT OF SERVICE | ID={id} | " + $"Python cell=[{pos[0]}, {pos[1]}] | " + $"topY={topY} | " + $"Unity position={worldPosition}" );
 
         markers[id].transform.position = worldPosition;
         markers[id].SetActive(true);
