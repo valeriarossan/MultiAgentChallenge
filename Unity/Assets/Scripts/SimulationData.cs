@@ -1,17 +1,13 @@
 using System;
 using System.Collections.Generic;
 
-[Serializable]
-public class PalletData
-{
+[Serializable] public class PalletData{
     public int id;
     public int[] pos;
     public string state;
 }
 
-[Serializable]
-public class AgvData
-{
+[Serializable] public class AgvData{
     public int id;
     public int[] pos;
     public string state;
@@ -19,45 +15,35 @@ public class AgvData
     public int orientation;
 }
 
-[Serializable]
-public class RackData
-{
+[Serializable] public class RackData{
     public int id;
     public int[] pos;
     public int? pallet_id;
     public string state;
 }
 
-[Serializable]
-public class DockData
-{
+[Serializable] public class DockData{
     public int id;
     public int[] pos;
     public int? pallet_id;
     public string state;
 }
 
-[Serializable]
-public class ProductionLineData
-{
+[Serializable] public class ProductionLineData{
     public int id;
     public int[] pos;
     public int? pallet_id;
     public string state;
 }
 
-[Serializable]
-public class PersonData
-{
+[Serializable] public class PersonData{
     public int id;
     public int[] pos;
     public string state;
     public int orientation;
 }
 
-[Serializable]
-public class FrameData
-{
+[Serializable] public class FrameData{
     public int idx;
     public List<AgvData> avgs;
     public List<RackData> racks;

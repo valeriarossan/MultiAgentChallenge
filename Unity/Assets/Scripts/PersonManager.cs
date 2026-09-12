@@ -7,14 +7,8 @@ public class PersonManager : MonoBehaviour
     [Header("Referencias")]
     [SerializeField] private SimulationManager simulationManager;
 
-    [Header("Prefab y mallas")]
-    public GameObject personPrefab; // tiene MeshFilter + MeshRenderer, arranca con idleMesh
-    // ANTES:
-    // public Mesh idleMesh;
-    // public Mesh walkAMesh;
-    // public Mesh walkBMesh;
-
-    // AHORA:
+    [Header("Prefabs")]
+    public GameObject personPrefab; 
     public GameObject idlePosePrefab;
     public GameObject walkAPosePrefab;
     public GameObject walkBPosePrefab;
@@ -28,54 +22,35 @@ public class PersonManager : MonoBehaviour
     }
 
     private Dictionary<int, PersonPoses> personPoses = new Dictionary<int, PersonPoses>();
-
-
     private Dictionary<int, GameObject> personObjects = new Dictionary<int, GameObject>();
     private float yOffset;
 
-    private void Start()
-    {
+    private void Start(){
         yOffset = CalculateYOffset();
     }
 
-    private void OnEnable()
-    {
+    private void OnEnable(){
         simulationManager.OnFrameUpdated += HandleFrame;
     }
 
-    private void OnDisable()
-    {
+    private void OnDisable(){
         simulationManager.OnFrameUpdated -= HandleFrame;
     }
 
 
-    // Este método reemplaza tu propio Update()/timer:
     // se llama automáticamente cuando SimulationManager avanza de frame.
-    private void HandleFrame(FrameData frame)
-    {
+    private void HandleFrame(FrameData frame){
         AddNewPersons(frame);
         AnimatePersonsToFrame(frame);
     }
 
-    private void AddNewPersons(FrameData frame)
-    {
-        foreach (PersonData p in frame.persons)
-        {
+    private void AddNewPersons(FrameData frame){
+        foreach (PersonData p in frame.persons){
             if (personPoses.ContainsKey(p.id)) continue;
 
-            Vector3 position =
-                CellToUnity(
-                    p.pos[0],
-                    p.pos[1],
-                    yOffset
-                );
+            Vector3 position = CellToUnity(p.pos[0], p.pos[1], yOffset);
 
-            Quaternion rotation =
-                Quaternion.Euler(
-                    0,
-                    p.orientation + 180f,
-                    0
-                );
+            Quaternion rotation = Quaternion.Euler(0, p.orientation + 180f, 0);
 
             GameObject root = new GameObject($"Person_{p.id}");
             root.transform.SetPositionAndRotation(position, rotation);
@@ -95,10 +70,8 @@ public class PersonManager : MonoBehaviour
         }
     }
 
-    private void AnimatePersonsToFrame(FrameData frame)
-    {
-        foreach (var entry in personPoses)
-        {
+    private void AnimatePersonsToFrame(FrameData frame){
+        foreach (var entry in personPoses){
             int personId = entry.Key;
             PersonPoses poses = entry.Value;
             PersonData data = frame.persons.Find(p => p.id == personId);
@@ -109,41 +82,28 @@ public class PersonManager : MonoBehaviour
         }
     }
 
-    private IEnumerator AnimatePersonToFrame(PersonPoses poses, PersonData nextFramePersonData)
-    {
+    private IEnumerator AnimatePersonToFrame(PersonPoses poses, PersonData nextFramePersonData){
         float frameDuration = simulationManager.SecondsPerFrame;
 
-        if (nextFramePersonData.state == "inactive")
-        {
+        if (nextFramePersonData.state == "inactive"){
             poses.root.SetActive(false);
             yield break;
         }
 
         poses.root.SetActive(true);
+        Vector3 targetPos =CellToUnity(nextFramePersonData.pos[0], nextFramePersonData.pos[1], yOffset);
 
-        Vector3 targetPos =
-        CellToUnity(
-            nextFramePersonData.pos[0],
-            nextFramePersonData.pos[1],
-            yOffset
-        );
-
-        if (targetPos == poses.root.transform.position)
-        {
+        if (targetPos == poses.root.transform.position){
             SetActivePose(poses, poses.idle);
             yield break;
         }
 
-        Vector3 direction =
-            (targetPos - poses.root.transform.position).normalized;
+        Vector3 direction = (targetPos - poses.root.transform.position).normalized;
 
-        Quaternion targetRotation =
-            Quaternion.LookRotation(direction) *
-            Quaternion.Euler(0, 180f, 0);
+        Quaternion targetRotation = Quaternion.LookRotation(direction) * Quaternion.Euler(0, 180f, 0);
         bool alreadyFacingTarget = Quaternion.Angle(poses.root.transform.rotation, targetRotation) < 1f;
 
-        if (!alreadyFacingTarget)
-        {
+        if (!alreadyFacingTarget){
             yield return StartCoroutine(RotatePerson(poses.root, targetRotation, frameDuration * 0.2f));
         }
 
@@ -157,15 +117,11 @@ public class PersonManager : MonoBehaviour
         poses.walkB.SetActive(activePose == poses.walkB);
     }
 
-    // ---- Estas dos quedan EXACTAMENTE igual a como las escribió tu amigo ----
-
-    private IEnumerator RotatePerson(GameObject person, Quaternion targetRotation, float time)
-    {
+    private IEnumerator RotatePerson(GameObject person, Quaternion targetRotation, float time){
         Quaternion startRotation = person.transform.rotation;
         float elapsed = 0f;
 
-        while (elapsed < time)
-        {
+        while (elapsed < time){
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / time);
             person.transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
@@ -182,14 +138,12 @@ public class PersonManager : MonoBehaviour
         SetActivePose(poses, poses.walkA);
         bool showingA = true;
 
-        while (elapsed < time)
-        {
+        while (elapsed < time){
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / time);
             poses.root.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
 
-            if (showingA && t >= 0.5f)
-            {
+            if (showingA && t >= 0.5f){
                 SetActivePose(poses, poses.walkB);
                 showingA = false;
             }
@@ -201,32 +155,18 @@ public class PersonManager : MonoBehaviour
         SetActivePose(poses, poses.idle);
     }
 
-    private float CalculateYOffset()
-    {
-        MeshFilter mf =
-            idlePosePrefab.GetComponentInChildren<MeshFilter>();
+    private float CalculateYOffset(){
+        MeshFilter mf = idlePosePrefab.GetComponentInChildren<MeshFilter>();
 
-        if (mf == null || mf.sharedMesh == null)
-        {
-            Debug.LogWarning(
-                "No se encontró MeshFilter/Mesh en idlePosePrefab."
-            );
-
+        if (mf == null || mf.sharedMesh == null){
+            Debug.LogWarning("No se encontró MeshFilter/Mesh en idlePosePrefab.");
             return 0f;
         }
 
         return mf.sharedMesh.bounds.size.y / 2f * 0.1f;
     }
 
-    private Vector3 CellToUnity(
-    int x,
-    int y,
-    float height)
-    {
-        return new Vector3(
-            x + 0.5f,
-            height,
-            -y - 0.5f
-        );
+    private Vector3 CellToUnity(int x, int y, float height){
+        return new Vector3(x + 0.5f, height, -y - 0.5f);
     }
 }
